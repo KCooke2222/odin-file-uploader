@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><title>Folder</title></head>
+<body>
+  <h1>Files</h1>
+
+  <form action="/data/upload" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="folderId" value="<%= folderId %>" />
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+  </form>
+
+  <% files.forEach((file) => { %>
+    <p><%= file.name %></p>
+  <% }) %>
+</body>
+</html>

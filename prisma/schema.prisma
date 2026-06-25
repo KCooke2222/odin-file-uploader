@@ -16,7 +16,27 @@ model User {
   id        Int       @id @default(autoincrement())
   username  String    @unique
   password  String
-  membership String   @default("user")
+  folders Folder[]
+}
+
+model Folder {
+  id        Int       @id @default(autoincrement())
+  name String
+  files File[]
+
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+}
+
+model File {
+  id        Int       @id @default(autoincrement())
+  path  String    @unique
+  name       String    // original filename
+  size       Int       // bytes
+  uploadedAt DateTime  @default(now())
+
+  folderId Int
+  folder Folder @relation(fields: [folderId], references: [id])
 }
 
 model Session {

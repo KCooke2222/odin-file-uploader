@@ -12,10 +12,19 @@
 
     <% if (locals.currentUser) {%>
       <p>Welcome back, <%= currentUser.username %>.</p>
+
       <nav>
-        <a href="/users/become-member">Become member</a>
         <a href="/users/log-out">Log out</a>
       </nav>
+      <form action="/data/folder" method="POST">
+        <input type="text" name="name" placeholder="Folder name" required />
+        <button type="submit">Create Folder</button>
+      </form>
+      <div class="folders">
+        <% folders.forEach((folder) => { %>
+          <a href="/data/folder/<%= folder.id %>"><%= folder.name %></a>
+        <% }) %>
+      </div>
     <% } else { %>
       <p>Please log in.</p>
     <% } %>

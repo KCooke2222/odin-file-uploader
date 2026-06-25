@@ -7,6 +7,7 @@ import passport from "passport";
 import bcrypt from "bcryptjs";
 import { Strategy as LocalStrategy } from "passport-local";
 import usersRouter from "./routes/users.js";
+import dataRouter from "./routes/data.js";
 import { prisma } from "./lib/prisma.js";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 
@@ -74,11 +75,13 @@ app.use((req, res, next) => {
 });
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", (req, res) => {
-  res.render("index");
+app.get("/", async (req, res) => {
+  const folders = await prisma.folder.findMany();
+  res.render("index", { folders });
 });
 
 app.use("/users", usersRouter);
+app.use("/data", dataRouter);
 
 app.listen(3000, (error) => {
   if (error) {
