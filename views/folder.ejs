@@ -12,6 +12,13 @@
 
   <% files.forEach((file) => { %>
     <p><%= file.name %></p>
+    <p><%= file.size %></p>
+    <p><%= file.uploadedAt %></p>
+    <a href="/data/file/<%= file.id %>/download">Download</a>
+    <form action="/data/file/<%= file.id %>/delete" method="POST">
+      <button type="submit">Delete</button>
+    </form>
+
   <% }) %>
 </body>
 </html>
