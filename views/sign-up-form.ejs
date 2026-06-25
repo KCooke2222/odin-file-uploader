@@ -1,35 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="/styles.css" />
-    <title>Sign Up</title>
-  </head>
-  <body>
-    <% if (errors.length > 0) { %>
-      <ul class="errors">
-        <% errors.forEach((error) => { %>
-          <li><%= error.msg %></li>
-        <% }) %>
-      </ul>
-    <% } %>
-    <p><a href="/">Back to board</a></p>
-    <h1>Sign Up</h1>
-    <form action="/users/sign-up" method="POST">
-      <label for="username">Username</label>
-      <input
-        id="username"
-        name="username"
-        placeholder="username"
-        type="text"
-        value="<%= values.username || '' %>"
-      />
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" />
-      <label for="confirmPassword">Confirm Password</label>
-      <input id="confirmPassword" name="confirmPassword" type="password" />
-      <button type="submit">Sign Up</button>
-    </form>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Sign Up - Drive</title>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-logo">📁 <span>Drive</span></div>
+  </header>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <h1>Create account</h1>
+
+      <% if (errors.length > 0) { %>
+        <ul class="errors">
+          <% errors.forEach((error) => { %>
+            <li>⚠ <%= error.msg %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+
+      <form action="/users/sign-up" method="POST">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" placeholder="Choose a username" value="<%= values.username || '' %>" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="At least 8 characters" />
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Repeat password" />
+        </div>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="/">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+</body>
 </html>

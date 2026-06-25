@@ -4,52 +4,76 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/styles.css">
-  <title>Members Only</title>
+  <title>Drive</title>
 </head>
 <body>
-  <header>
-    <h1>Members Only</h1>
 
-    <% if (locals.currentUser) {%>
-      <p>Welcome back, <%= currentUser.username %>.</p>
-
-      <nav>
-        <a href="/users/log-out">Log out</a>
-      </nav>
-      <form action="/data/folder" method="POST">
-        <input type="text" name="name" placeholder="Folder name" required />
-        <button type="submit">Create Folder</button>
-      </form>
-      <div class="folders">
-        <% folders.forEach((folder) => { %>
-  <a href="/data/folder/<%= folder.id %>"><%= folder.name %></a>
-
-  <form action="/data/folder/<%= folder.id %>/update" method="POST" style="display:inline">
-    <input type="text" name="name" placeholder="New name" required />
-    <button type="submit">Rename</button>
-  </form>
-
-  <form action="/data/folder/<%= folder.id %>/delete" method="POST" style="display:inline">
-    <button type="submit">Delete</button>
-  </form>
-<% }) %>
+  <header class="topbar">
+    <div class="topbar-logo">📁 <span>Drive</span></div>
+    <% if (locals.currentUser) { %>
+      <div class="topbar-actions">
+        <span class="topbar-user"><%= currentUser.username %></span>
+        <a href="/users/log-out" class="btn btn-ghost">Log out</a>
       </div>
-    <% } else { %>
-      <p>Please log in.</p>
     <% } %>
   </header>
 
-  <main>
-    <% if (!locals.currentUser) { %>
-    <form action="/users/log-in" method="POST">
-      <label for="username">Username</label>
-      <input id="username" name="username" placeholder="username" type="text" />
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" />
-      <button type="submit">Log In</button>
-    </form>
-    <p><a href="/users/sign-up">Create an account</a></p>
-    <%}%>
-  </main>
+  <% if (locals.currentUser) { %>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-item active">🏠 My Drive</div>
+      </aside>
+
+      <main class="main-content">
+        <div class="new-folder-bar">
+          <form action="/data/folder" method="POST" style="display:flex;gap:8px">
+            <input type="text" name="name" placeholder="New folder name" required />
+            <button type="submit" class="btn btn-primary">+ New Folder</button>
+          </form>
+        </div>
+
+        <p class="section-title">Folders</p>
+        <div class="folder-grid">
+          <% folders.forEach((folder) => { %>
+            <div class="folder-card">
+              <span class="folder-icon">📂</span>
+              <a href="/data/folder/<%= folder.id %>" class="folder-name"><%= folder.name %></a>
+              <div class="folder-actions">
+                <form class="rename-form" action="/data/folder/<%= folder.id %>/update" method="POST" style="display:flex;gap:4px">
+                  <input type="text" name="name" placeholder="Rename" required />
+                  <button type="submit" class="btn btn-ghost btn-sm">✏️</button>
+                </form>
+                <form action="/data/folder/<%= folder.id %>/delete" method="POST">
+                  <button type="submit" class="btn btn-danger">🗑</button>
+                </form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </main>
+    </div>
+
+  <% } else { %>
+    <div class="auth-container">
+      <div class="auth-card">
+        <h1>Sign in to Drive</h1>
+        <form action="/users/log-in" method="POST">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" placeholder="Username" />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="Password" />
+          </div>
+          <button type="submit" class="btn btn-primary">Sign In</button>
+        </form>
+        <div class="auth-footer">
+          No account? <a href="/users/sign-up">Sign up</a>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
 </body>
 </html>
