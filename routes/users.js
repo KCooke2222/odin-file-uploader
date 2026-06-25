@@ -1,8 +1,8 @@
-const db = require("../db/pool");
-const { Router } = require("express");
-const { body, validationResult, matchedData } = require("express-validator");
-const passport = require("passport");
-const bcrypt = require("bcryptjs");
+import { prisma } from "../lib/prisma.js";
+import { Router } from "express";
+import { body, validationResult, matchedData } from "express-validator";
+import passport from "passport";
+import bcrypt from "bcryptjs";
 
 const router = Router();
 
@@ -48,10 +48,9 @@ router.post("/sign-up", validateUser, async (req, res, next) => {
 
     const { username, password } = matchedData(req);
     const hashedPassword = await bcrypt.hash(password, 10);
-    await db.query("INSERT INTO users (username, password) VALUES ($1, $2)", [
-      username,
-      hashedPassword,
-    ]);
+    await prisma.user.create({
+      data: { username: username, password: hashedPassword },
+    });
     res.redirect("/");
   } catch (error) {
     console.error(error);
@@ -77,49 +76,4 @@ router.get("/log-out", (req, res, next) => {
   });
 });
 
-router.get("/become-member", (req, res) =>
-  res.render("member-sign-up", {
-    errors: [],
-    values: {},
-  }),
-);
-
-router.post("/become-member", async (req, res, next) => {
-  try {
-    if (!req.user) {
-      return res.redirect("/");
-    }
-
-    if (req.body.password === "1234") {
-      await db.query("UPDATE users SET membership = $1 WHERE id = $2", [
-        "member",
-        req.user.id,
-      ]);
-    }
-
-    res.redirect("/");
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.post("/become-admin", async (req, res, next) => {
-  try {
-    if (!req.user) {
-      return res.redirect("/");
-    }
-
-    if (req.body.password === "12345") {
-      await db.query("UPDATE users SET membership = $1 WHERE id = $2", [
-        "admin",
-        req.user.id,
-      ]);
-    }
-
-    res.redirect("/");
-  } catch (error) {
-    next(error);
-  }
-});
-
-module.exports = router;
+export default router;

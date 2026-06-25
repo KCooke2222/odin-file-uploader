@@ -1,23 +1,23 @@
-/////// app.js
-require("dotenv").config();
-const path = require("node:path");
-const express = require("express");
-const session = require("express-session");
-const passport = require("passport");
-const bcrypt = require("bcryptjs");
-const LocalStrategy = require("passport-local").Strategy;
-const usersRouter = require("./routes/users");
-const messagesRouter = require("./routes/messages");
-const pool = require("./db/pool");
+import "dotenv/config";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import express from "express";
+import session from "express-session";
+import passport from "passport";
+import bcrypt from "bcryptjs";
+import { Strategy as LocalStrategy } from "passport-local";
+import usersRouter from "./routes/users.js";
+import { prisma } from "./lib/prisma.js";
+import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
-      const { rows } = await pool.query(
-        "SELECT * FROM users WHERE username = $1",
-        [username],
-      );
-      const user = rows[0];
+      const user = await prisma.user.findUnique({
+        where: { username },
+      });
 
       if (!user) {
         return done(null, false, { message: "Incorrect username" });
@@ -40,10 +40,9 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const { rows } = await pool.query("SELECT * FROM users WHERE id = $1", [
-      id,
-    ]);
-    const user = rows[0];
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
 
     done(null, user);
   } catch (err) {
@@ -56,7 +55,17 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.use(express.static(path.join(__dirname, "public")));
-app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
+app.use(
+  session({
+    secret: "cats",
+    resave: false,
+    saveUninitialized: false,
+    store: new PrismaSessionStore(prisma, {
+      checkPeriod: 2 * 60 * 1000,
+      dbRecordIdIsSessionId: true,
+    }),
+  }),
+);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use((req, res, next) => {
@@ -65,38 +74,11 @@ app.use((req, res, next) => {
 });
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/", async (req, res, next) => {
-  try {
-    let result;
-
-    if (
-      req.user &&
-      (req.user.membership === "member" || req.user.membership === "admin")
-    ) {
-      result = await pool.query(`
-        SELECT messages.id, messages.text, messages.image_url, messages.created_at, users.username
-        FROM messages
-        JOIN users ON messages.user_id = users.id
-        ORDER BY messages.created_at DESC
-      `);
-    } else {
-      result = await pool.query(`
-        SELECT id, text, image_url
-        FROM messages
-        ORDER BY created_at DESC
-      `);
-    }
-
-    res.render("index", {
-      messages: result.rows,
-    });
-  } catch (error) {
-    next(error);
-  }
+app.get("/", (req, res) => {
+  res.render("index");
 });
 
 app.use("/users", usersRouter);
-app.use("/messages", messagesRouter);
 
 app.listen(3000, (error) => {
   if (error) {

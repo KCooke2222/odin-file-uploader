@@ -13,7 +13,6 @@
     <% if (locals.currentUser) {%>
       <p>Welcome back, <%= currentUser.username %>.</p>
       <nav>
-        <a href="/messages/new">Create new message</a>
         <a href="/users/become-member">Become member</a>
         <a href="/users/log-out">Log out</a>
       </nav>
@@ -33,30 +32,6 @@
     </form>
     <p><a href="/users/sign-up">Create an account</a></p>
     <%}%>
-
-  <% messages.forEach((message) => { %>
-    <article>
-      <p><%= message.text %></p>
-
-      <% if (message.image_url) { %>
-        <img src="<%= message.image_url %>" alt="" width="200" />
-      <% } %>
-
-      <% if (message.username) { %>
-        <p class="meta">By <%= message.username %></p>
-      <% } %>
-
-      <% if (message.created_at) { %>
-        <p class="meta"><%= message.created_at.toLocaleString() %></p>
-      <% } %>
-
-      <% if (currentUser && currentUser.membership === "admin") { %>
-        <form action="/messages/<%= message.id %>/delete" method="POST">
-          <button type="submit">Delete</button>
-        </form>
-      <% } %>
-    </article>
-  <% }) %>
   </main>
 </body>
 </html>
