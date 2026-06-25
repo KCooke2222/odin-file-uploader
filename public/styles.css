@@ -1,0 +1,110 @@
+body {
+  max-width: 760px;
+  margin: 32px auto;
+  padding: 0 16px;
+  color: #111;
+  background: #f7f7f7;
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.4;
+}
+
+a {
+  color: #003399;
+}
+
+header,
+main,
+article,
+form {
+  margin-bottom: 18px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+form {
+  display: grid;
+  gap: 8px;
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+textarea {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 420px;
+  padding: 4px;
+  border: 1px solid #777;
+  background: #fff;
+}
+
+button {
+  width: max-content;
+  padding: 3px 10px;
+  border: 1px solid #555;
+  background: #eee;
+  cursor: pointer;
+}
+
+article {
+  padding: 12px 0;
+  border-top: 1px solid #bbb;
+}
+
+article img,
+.image-option img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.errors {
+  color: #8b0000;
+}
+
+.meta {
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.image-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 4px 0 10px;
+}
+
+.image-option {
+  display: grid;
+  gap: 4px;
+  width: 150px;
+  padding: 6px;
+  border: 1px solid #aaa;
+  background: #fff;
+  cursor: pointer;
+}
+
+.image-option img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.image-choice {
+  position: absolute;
+  opacity: 0;
+}
+
+.image-choice:checked + .image-option {
+  border: 3px double #111;
+  padding: 4px;
+  background: #ffffdd;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles.css" />
+    <title>Become Member</title>
+  </head>
+  <body>
+    <% if (errors.length > 0) { %>
+      <ul class="errors">
+        <% errors.forEach((error) => { %>
+          <li><%= error.msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+    <p><a href="/">Back to board</a></p>
+    <h1>Become Member</h1>
+    <form action="/users/become-member" method="POST">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" />
+      <button type="submit">Sign Up</button>
+    </form>
+    <h1>Become Admin</h1>
+    <form action="/users/become-admin" method="POST">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" />
+      <button type="submit">Sign Up</button>
+    </form>
+  </body>
+</html>
